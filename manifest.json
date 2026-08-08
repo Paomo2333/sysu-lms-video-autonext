@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "中大助教培训视频自动连播",
+  "version": "1.1.0",
+  "description": "课程视频自动静音播放，并在自然结束后打开官方下一节链接。",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://lms.sysu.edu.cn/mod/fsresource/view.php*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
