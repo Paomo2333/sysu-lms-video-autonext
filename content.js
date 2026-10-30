@@ -6,6 +6,8 @@
   const VIDEO_SELECTOR = "video";
   const NEXT_LINK_SELECTOR =
     'a.btn.btn-link[href*="/mod/fsresource/view.php"][href*="forceview=1"]';
+  // Moodle 官方“下一活动”按钮，下一节不一定是 fsresource 视频页（如“弹幕&随机点名”）。
+  const OFFICIAL_NEXT_LINK_SELECTOR = "a#next-activity-link[href]";
   const SAVE_PROGRESS_DELAY_MS = 4000;
 
   // 只在“助教资格培训2025-2026学年第二学期”课程内启用。
@@ -49,10 +51,18 @@
   }
 
   function findNextLink() {
+    // 优先用 Moodle 官方“下一活动”按钮，不限制 href 指向的模块类型。
+    const official = document.querySelector(OFFICIAL_NEXT_LINK_SELECTOR);
+    if (official) {
+      return official;
+    }
+
+    // 回退：兼容原版的 fsresource 下一节链接；箭头 ►(U+25BA) 和 ▶(U+25B6) 都接受。
     const candidates = Array.from(document.querySelectorAll(NEXT_LINK_SELECTOR));
     return (
-      candidates.find((link) => (link.textContent || "").trim().endsWith("►")) ||
-      null
+      candidates.find((link) =>
+        /[►▶]$/.test((link.textContent || "").trim())
+      ) || null
     );
   }
 
